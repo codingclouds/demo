@@ -1,10 +1,12 @@
 package com.example.demo;
 
-import com.example.demo.web.HelloController;
+import com.example.demo.service.UserService;
 import com.example.demo.web.UserController;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -97,5 +99,18 @@ public class DemoApplicationTests {
 
 	}
 
+	@Autowired
+    private UserService userService;
+	@Test
+	public void test(){
+		userService.deleteAllUser();
+
+	    userService.create("a",1);
+	    userService.create("b",2);
+	    userService.create("c",3);
+	    userService.create("d",4);
+
+        Assert.assertEquals(4,userService.getAllUser());
+    }
 
 }
