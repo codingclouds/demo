@@ -7,8 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -99,18 +101,33 @@ public class DemoApplicationTests {
 
 	}
 
+//	@Autowired
+//    private UserService userService;
+//	@Test
+//	public void test(){
+//		userService.deleteAllUser();
+//
+//	    userService.create("a",1);
+//	    userService.create("b",2);
+//	    userService.create("c",3);
+//	    userService.create("d",4);
+//
+//        Assert.assertEquals(4,userService.getAllUser());
+//    }
+
 	@Autowired
-    private UserService userService;
+	@Qualifier("primaryJdbcTemplate")
+	protected JdbcTemplate jdbcTemplate1;
+
+	@Autowired
+	@Qualifier("secondaryJdbcTemplate")
+	protected JdbcTemplate jdbcTemplate2;
+
 	@Test
-	public void test(){
-		userService.deleteAllUser();
-
-	    userService.create("a",1);
-	    userService.create("b",2);
-	    userService.create("c",3);
-	    userService.create("d",4);
-
-        Assert.assertEquals(4,userService.getAllUser());
-    }
+	public void testDataSource(){
+		int i = jdbcTemplate1.queryForObject("select count(1) from user where name =? and age =?",Integer.class,new Object[]{"a",1});
+		System.out.println("*************"+i+"**************");
+		jdbcTemplate2.update("insert into user values(?,?)","a",1);
+	}
 
 }
